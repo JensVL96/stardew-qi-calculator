@@ -149,12 +149,14 @@ const StardewCropCalculator = () => {
       minHeight: '100vh',
       display: 'flex',
       justifyContent: 'center',
+      alignItems: 'center',
       background: 'linear-gradient(to bottom right, #f0fdf4, #d1fae5)',
       padding: '2rem',
       fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif'
     } as React.CSSProperties,
     maxWidth: {
-      maxWidth: '1200px',
+      maxWidth: '1100px',
+      width: '100%',
       margin: '0 auto'
     } as React.CSSProperties,
     card: {
