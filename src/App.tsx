@@ -13,7 +13,7 @@ const StardewCropCalculator = () => {
     const foragingDays = customForagingDays !== '' 
       ? Math.min(Math.max(1, parseInt(customForagingDays) || 1), maxForagingDays)
       : maxForagingDays;
-    // const isLimited = customForagingDays !== '' && foragingDays < maxForagingDays;
+    const isLimited = customForagingDays !== '' && foragingDays < maxForagingDays;
 
     
     if (foragingDays === 0 || maxForagingDays === 0) {
@@ -28,38 +28,53 @@ const StardewCropCalculator = () => {
       };
     }
 
-    let cycles: { foragingDay: number; finalMultiplier: number; contribution: number }[] = [];
+    let cycles: { daysContributing: number; multiplier: number; contribution: number }[] = [];
     let totalMultiplier = 0;
 
-    for (let dayOffset = 0; dayOffset < foragingDays; dayOffset++) {
+    if (!isLimited) {
       // Unlimited
-      const plantDay = daysLeft - dayOffset;
+      let cycleNum = 0;
+      let remainingDays = foragingDays;
 
-      //count multiples
-      let multiplier = 1;
-      let remainingDays = plantDay - growthTime;
-      while (remainingDays > growthTime) {
-        multiplier *= seedMultiplier;
-        remainingDays -= growthTime;
-      }
+      while (remainingDays > 0) {
+        const multiplier = Math.pow(seedMultiplier, cycleNum);
+        const contribution = remainingDays * multiplier;
 
-      const contribution = multiplier;
-      cycles.push({
-        foragingDay: plantDay,
-        finalMultiplier: multiplier,
-        contribution
-      });
+        cycles.push({
+          daysContributing: remainingDays,
+          multiplier,
+          contribution
+        });
 
       totalMultiplier += contribution;
 
+      cycleNum++;
+      remainingDays -= growthTime;
+      }
+    } else {
+      //Limited
+      const baseSeeds = foragingDays;
+      const remainingDays = daysLeft - foragingDays;
+      const harvests = Math.floor(remainingDays / growthTime);
+
+      const finalMultiplier = Math.pow(seedMultiplier, harvests);
+      totalMultiplier = baseSeeds * finalMultiplier;
+
+      cycles.push({
+        daysContributing: baseSeeds,
+        multiplier: finalMultiplier,
+        contribution: totalMultiplier
+      });
     }
 
     const dailySeedsNeeded = targetCrops / totalMultiplier;
 
 
-    const breakdown = cycles
-      .map(c => (c.finalMultiplier === 1 ? `1` : `${c.finalMultiplier}`))
-      .join(' + ') + ` = ${totalMultiplier}`;
+    const breakdown = cycles.map(c => c.multiplier === 1
+      ? `${c.daysContributing}`
+      : `${c.daysContributing}×${c.multiplier}`
+    )
+    .join(` + `) + ` = ${totalMultiplier}`;
 
     return {
       growthTime,
