@@ -33,7 +33,7 @@ const StardewCropCalculator = () => {
       let daysRemaining = foragingDay;
       let multiplier = 1;
       
-      while (daysRemaining > growthTime) {
+      while (daysRemaining >= growthTime) {
         daysRemaining -= growthTime;
         multiplier *= seedMultiplier;
       }
