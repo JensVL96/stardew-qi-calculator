@@ -30,40 +30,28 @@ const StardewCropCalculator = () => {
     }
 
     // Calculate contribution from each reseeding cycle
-    // Key: Use maxForagingDays for reseeding cycles (how long until deadline)
-    // But only count foragingDays for initial seed collection
+    // Seeds can be replanted until there are fewer than growthTime days remaining
     const cycles = [];
-    let totalMultiplier = foragingDays;
-    let cycleNum = 0;
+    let totalMultiplier = 0;
     
-    cycles.push({
-      cycle: 0,
-      daysContributing: foragingDays,
-      multiplier: 1,
-      contribution: foragingDays
-    });
-
-    while (true) {
-      cycleNum++;
-      // Use maxForagingDays here because seeds can continue multiplying until deadline
-      const daysForThisCycle = Math.max(0, maxForagingDays - (growthTime * cycleNum));
+    // For each foraging day, calculate how many times its seeds can multiply
+    for (let foragingDay = daysLeft; foragingDay > daysLeft - foragingDays; foragingDay--) {
+      let daysRemaining = foragingDay;
+      let multiplier = 1;
       
-      if (daysForThisCycle === 0) break;
-      
-      // But limit to foragingDays (can't multiply seeds you didn't forage)
-      const actualDaysContributing = Math.min(daysForThisCycle, foragingDays);
-      
-      const multiplier = Math.pow(seedMultiplier, cycleNum);
-      const contribution = actualDaysContributing * multiplier;
+      // Keep harvesting and replanting while we have enough time
+      while (daysRemaining > growthTime) {
+        daysRemaining -= growthTime;
+        multiplier *= seedMultiplier;
+      }
       
       cycles.push({
-        cycle: cycleNum,
-        daysContributing: actualDaysContributing,
-        multiplier,
-        contribution
+        foragingDay,
+        finalMultiplier: multiplier,
+        contribution: multiplier
       });
       
-      totalMultiplier += contribution;
+      totalMultiplier += multiplier;
     }
 
     const dailySeedsNeeded = targetCrops / totalMultiplier;
@@ -96,9 +84,15 @@ const StardewCropCalculator = () => {
       const harvestDays = [];
       let currentDay = day - growthTime;
       
-      while (currentDay >= 1) {
+      // Count harvests, but the last one must have time to grow into final crops
+      while (currentDay > growthTime) {
         harvestDays.push(currentDay);
         currentDay -= growthTime;
+      }
+      
+      // Add the final harvest day (which produces crops, not seeds for reseeding)
+      if (currentDay >= 1 && currentDay <= growthTime) {
+        harvestDays.push(currentDay);
       }
       
       const harvests = harvestDays.length;
