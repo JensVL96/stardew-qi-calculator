@@ -66,23 +66,23 @@ const StardewCropCalculator = () => {
       }
     } else {
       // LIMITED PER DAY LOGIC
-      for (let i = 0; i < foragingDays; i++) {
-        const plantDay = daysLeft - i;
-  
+      for (let dayIndex = 0; dayIndex < foragingDays; dayIndex++) {
+        const plantDay = daysLeft - dayIndex;
+    
         let multiplier = 1;
         let remainingDays = plantDay - growthTime;
-  
+    
         while (remainingDays > growthTime) {
           multiplier *= seedMultiplier;
           remainingDays -= growthTime;
         }
-  
+    
         cycles.push({
           daysContributing: 1,
           multiplier,
           contribution: multiplier
         });
-  
+    
         totalMultiplier += multiplier;
       }
     }
