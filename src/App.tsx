@@ -30,6 +30,8 @@ const StardewCropCalculator = () => {
     }
 
     // Calculate contribution from each reseeding cycle
+    // Key: Use maxForagingDays for reseeding cycles (how long until deadline)
+    // But only count foragingDays for initial seed collection
     const cycles = [];
     let totalMultiplier = foragingDays;
     let cycleNum = 0;
@@ -43,16 +45,20 @@ const StardewCropCalculator = () => {
 
     while (true) {
       cycleNum++;
-      const daysForThisCycle = Math.max(0, foragingDays - (growthTime * cycleNum));
+      // Use maxForagingDays here because seeds can continue multiplying until deadline
+      const daysForThisCycle = Math.max(0, maxForagingDays - (growthTime * cycleNum));
       
       if (daysForThisCycle === 0) break;
       
+      // But limit to foragingDays (can't multiply seeds you didn't forage)
+      const actualDaysContributing = Math.min(daysForThisCycle, foragingDays);
+      
       const multiplier = Math.pow(seedMultiplier, cycleNum);
-      const contribution = daysForThisCycle * multiplier;
+      const contribution = actualDaysContributing * multiplier;
       
       cycles.push({
         cycle: cycleNum,
-        daysContributing: daysForThisCycle,
+        daysContributing: actualDaysContributing,
         multiplier,
         contribution
       });
