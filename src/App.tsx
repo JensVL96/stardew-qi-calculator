@@ -1,3 +1,4 @@
+import { FunnelX } from 'lucide-react';
 import React, { useState, useMemo } from 'react';
 
 const StardewCropCalculator = () => {
@@ -146,11 +147,14 @@ const StardewCropCalculator = () => {
   const styles = {
     container: {
       minHeight: '100vh',
+      display: 'flex',
+      justifyContent: 'center',
       background: 'linear-gradient(to bottom right, #f0fdf4, #d1fae5)',
       padding: '2rem',
       fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif'
     } as React.CSSProperties,
     maxWidth: {
+      width: '100%',
       maxWidth: '1200px',
       margin: '0 auto'
     } as React.CSSProperties,
@@ -313,10 +317,42 @@ const StardewCropCalculator = () => {
       <div style={styles.maxWidth}>
         <div style={styles.card}>
           <div style={styles.header}>
-            <svg style={styles.icon} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-            </svg>
-            <h1 style={styles.title}>Stardew Valley Crop Quest Calculator</h1>
+          <svg
+            width="32"
+            height="32"
+            viewBox="0 0 32 32"
+            style={styles.icon}
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            {/* leaves */}
+            <path
+              d="M14 4 C10 2, 6 4, 6 8 C10 8, 12 6, 14 4"
+              fill="#22c55e"
+            />
+            <path
+              d="M18 4 C22 2, 26 4, 26 8 C22 8, 20 6, 18 4"
+              fill="#16a34a"
+            />
+
+            {/* fruit body */}
+            <circle cx="16" cy="18" r="10" fill="#2563eb" />
+
+            {/* highlights */}
+            <circle cx="13" cy="15" r="2" fill="#60a5fa" />
+            <circle cx="18" cy="20" r="3" fill="#1d4ed8" />
+
+            {/* outline */}
+            <circle
+              cx="16"
+              cy="18"
+              r="10"
+              fill="none"
+              stroke="#1e3a8a"
+              strokeWidth="1.5"
+            />
+          </svg>
+
+            <h1 style={styles.title}>Stardew Valley Qi fruit Quest Calculator</h1>
           </div>
           
           <div style={styles.grid}>
