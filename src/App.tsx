@@ -10,12 +10,18 @@ const StardewCropCalculator = () => {
   const calculations = useMemo(() => {
     const growthTime = useSpeedGro ? 3 : 4;
     const maxForagingDays = Math.max(0, daysLeft - growthTime);
-    const foragingDays = customForagingDays !== '' 
-      ? Math.min(Math.max(1, parseInt(customForagingDays) || 1), maxForagingDays)
-      : maxForagingDays;
-    const isLimited = customForagingDays !== '' && foragingDays < maxForagingDays;
-
-    
+  
+    const foragingDays =
+      customForagingDays !== ''
+        ? Math.min(
+            Math.max(1, parseInt(customForagingDays) || 1),
+            maxForagingDays
+          )
+        : maxForagingDays;
+  
+    const isLimited =
+      customForagingDays !== '' && foragingDays < maxForagingDays;
+  
     if (foragingDays === 0 || maxForagingDays === 0) {
       return {
         growthTime,
@@ -24,58 +30,47 @@ const StardewCropCalculator = () => {
         cycles: [],
         totalMultiplier: 0,
         dailySeedsNeeded: Infinity,
-        breakdown: "Not enough days to complete even one growth cycle!"
+        breakdown: 'Not enough days to complete even one growth cycle!'
       };
     }
-
-    let cycles: { daysContributing: number; multiplier: number; contribution: number }[] = [];
+  
+    let cycles: {
+      daysContributing: number;
+      multiplier: number;
+      contribution: number;
+    }[] = [];
+  
     let totalMultiplier = 0;
-
-    if (!isLimited) {
-      // Unlimited
-      let cycleNum = 0;
-      let remainingDays = foragingDays;
-
-      while (remainingDays > 0) {
-        const multiplier = Math.pow(seedMultiplier, cycleNum);
-        const contribution = remainingDays * multiplier;
-
-        cycles.push({
-          daysContributing: remainingDays,
-          multiplier,
-          contribution
-        });
-
-      totalMultiplier += contribution;
-
-      cycleNum++;
-      remainingDays -= growthTime;
+  
+    // This loop now works for BOTH modes
+    for (let dayIndex = 0; dayIndex < foragingDays; dayIndex++) {
+      const plantDay = daysLeft - dayIndex;
+  
+      let multiplier = 1;
+      let remainingDays = plantDay - growthTime;
+  
+      while (remainingDays > growthTime) {
+        multiplier *= seedMultiplier;
+        remainingDays -= growthTime;
       }
-    } else {
-      //Limited
-      const baseSeeds = foragingDays;
-      const remainingDays = daysLeft - foragingDays;
-      const harvests = Math.floor(remainingDays / growthTime);
-
-      const finalMultiplier = Math.pow(seedMultiplier, harvests);
-      totalMultiplier = baseSeeds * finalMultiplier;
-
+  
       cycles.push({
-        daysContributing: baseSeeds,
-        multiplier: finalMultiplier,
-        contribution: totalMultiplier
+        daysContributing: 1,
+        multiplier,
+        contribution: multiplier
       });
+  
+      totalMultiplier += multiplier;
     }
-
+  
     const dailySeedsNeeded = targetCrops / totalMultiplier;
-
-
-    const breakdown = cycles.map(c => c.multiplier === 1
-      ? `${c.daysContributing}`
-      : `${c.daysContributing}×${c.multiplier}`
-    )
-    .join(` + `) + ` = ${totalMultiplier}`;
-
+  
+    const breakdown =
+      cycles
+        .map(c => (c.multiplier === 1 ? '1' : `${c.multiplier}`))
+        .join(' + ') +
+      ` = ${totalMultiplier}`;
+  
     return {
       growthTime,
       maxForagingDays,
