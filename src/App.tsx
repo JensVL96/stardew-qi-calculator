@@ -8,10 +8,7 @@ const StardewCropCalculator = () => {
   const [customForagingDays, setCustomForagingDays] = useState('');
 
   const calculations = useMemo(() => {
-    // Growth time is determined by Speed-Gro: 3 days with it, 4 days without
     const growthTime = useSpeedGro ? 3 : 4;
-    
-    // Available foraging days (need crops by final day, not seeds)
     const maxForagingDays = Math.max(0, daysLeft - growthTime);
     const foragingDays = customForagingDays !== '' 
       ? Math.min(Math.max(1, parseInt(customForagingDays) || 1), maxForagingDays)
@@ -29,17 +26,13 @@ const StardewCropCalculator = () => {
       };
     }
 
-    // Calculate contribution from each reseeding cycle
-    // Seeds can be replanted until there are fewer than growthTime days remaining
     const cycles = [];
     let totalMultiplier = 0;
     
-    // For each foraging day, calculate how many times its seeds can multiply
     for (let foragingDay = daysLeft; foragingDay > daysLeft - foragingDays; foragingDay--) {
       let daysRemaining = foragingDay;
       let multiplier = 1;
       
-      // Keep harvesting and replanting while we have enough time
       while (daysRemaining > growthTime) {
         daysRemaining -= growthTime;
         multiplier *= seedMultiplier;
@@ -55,12 +48,7 @@ const StardewCropCalculator = () => {
     }
 
     const dailySeedsNeeded = targetCrops / totalMultiplier;
-
-    let breakdown = cycles.map((c, i) => {
-      if (i === 0) return `${c.daysContributing}`;
-      return `${c.daysContributing}×${c.multiplier}`;
-    }).join(' + ');
-    
+    let breakdown = cycles.map(c => `${c.finalMultiplier}`).join(' + ');
     breakdown += ` = ${totalMultiplier.toFixed(2)}`;
 
     return {
@@ -84,19 +72,17 @@ const StardewCropCalculator = () => {
       const harvestDays = [];
       let currentDay = day - growthTime;
       
-      // Count harvests, but the last one must have time to grow into final crops
       while (currentDay > growthTime) {
         harvestDays.push(currentDay);
         currentDay -= growthTime;
       }
       
-      // Add the final harvest day (which produces crops, not seeds for reseeding)
       if (currentDay >= 1 && currentDay <= growthTime) {
         harvestDays.push(currentDay);
       }
       
       const harvests = harvestDays.length;
-      const finalOutput = Math.pow(seedMultiplier, harvests - 1);
+      const finalOutput = harvests > 0 ? Math.pow(seedMultiplier, harvests - 1) : 0;
       
       schedule.push({
         plantDay: day,
