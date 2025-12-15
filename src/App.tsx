@@ -30,12 +30,14 @@ const StardewCropCalculator = () => {
     let totalMultiplier = 0;
     
     for (let foragingDay = daysLeft; foragingDay > daysLeft - foragingDays; foragingDay--) {
-      let daysRemaining = foragingDay;
+      let currentDay = foragingDay;
       let multiplier = 1;
       
-      while (daysRemaining >= growthTime) {
-        daysRemaining -= growthTime;
+      // Count how many times we can harvest and replant before the final harvest
+      currentDay -= growthTime; // First harvest
+      while (currentDay > growthTime) {
         multiplier *= seedMultiplier;
+        currentDay -= growthTime;
       }
       
       cycles.push({
