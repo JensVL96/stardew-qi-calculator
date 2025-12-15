@@ -42,32 +42,60 @@ const StardewCropCalculator = () => {
   
     let totalMultiplier = 0;
   
-    // This loop now works for BOTH modes
-    for (let dayIndex = 0; dayIndex < foragingDays; dayIndex++) {
-      const plantDay = daysLeft - dayIndex;
+    if (!isLimited) {
+      // UNLIMITED PYRAMID LOGIC
+      let cycleNum = 0;
   
-      let multiplier = 1;
-      let remainingDays = plantDay - growthTime;
+      while (true) {
+        const daysContributing =
+          foragingDays - cycleNum * growthTime;
   
-      while (remainingDays > growthTime) {
-        multiplier *= seedMultiplier;
-        remainingDays -= growthTime;
+        if (daysContributing <= 0) break;
+  
+        const multiplier = Math.pow(seedMultiplier, cycleNum);
+        const contribution = daysContributing * multiplier;
+  
+        cycles.push({
+          daysContributing,
+          multiplier,
+          contribution
+        });
+  
+        totalMultiplier += contribution;
+        cycleNum++;
       }
+    } else {
+      // LIMITED PER DAY LOGIC
+      for (let i = 0; i < foragingDays; i++) {
+        const plantDay = daysLeft - i;
   
-      cycles.push({
-        daysContributing: 1,
-        multiplier,
-        contribution: multiplier
-      });
+        let multiplier = 1;
+        let remainingDays = plantDay - growthTime;
   
-      totalMultiplier += multiplier;
+        while (remainingDays > growthTime) {
+          multiplier *= seedMultiplier;
+          remainingDays -= growthTime;
+        }
+  
+        cycles.push({
+          daysContributing: 1,
+          multiplier,
+          contribution: multiplier
+        });
+  
+        totalMultiplier += multiplier;
+      }
     }
   
     const dailySeedsNeeded = targetCrops / totalMultiplier;
   
     const breakdown =
       cycles
-        .map(c => (c.multiplier === 1 ? '1' : `${c.multiplier}`))
+        .map(c =>
+          c.multiplier === 1
+            ? `${c.daysContributing}`
+            : `${c.daysContributing}×${c.multiplier}`
+        )
         .join(' + ') +
       ` = ${totalMultiplier}`;
   
