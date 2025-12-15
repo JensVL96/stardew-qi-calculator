@@ -147,16 +147,12 @@ const StardewCropCalculator = () => {
   const styles = {
     container: {
       minHeight: '100vh',
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
       background: 'linear-gradient(to bottom right, #f0fdf4, #d1fae5)',
       padding: '2rem',
       fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif'
     } as React.CSSProperties,
     maxWidth: {
-      maxWidth: '1100px',
-      width: '100%',
+      maxWidth: '1200px',
       margin: '0 auto'
     } as React.CSSProperties,
     card: {
@@ -315,231 +311,197 @@ const StardewCropCalculator = () => {
 
   return (
     <div style={styles.container}>
-      <div style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
-        <div style={styles.maxWidth}>
-          <div style={styles.card}>
-            <div style={styles.header}>
-            <svg
-              width="32"
-              height="32"
-              viewBox="0 0 32 32"
-              style={styles.icon}
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              {/* leaves */}
-              <path
-                d="M14 4 C10 2, 6 4, 6 8 C10 8, 12 6, 14 4"
-                fill="#22c55e"
-              />
-              <path
-                d="M18 4 C22 2, 26 4, 26 8 C22 8, 20 6, 18 4"
-                fill="#16a34a"
-              />
-
-              {/* fruit body */}
-              <circle cx="16" cy="18" r="10" fill="#2563eb" />
-
-              {/* highlights */}
-              <circle cx="13" cy="15" r="2" fill="#60a5fa" />
-              <circle cx="18" cy="20" r="3" fill="#1d4ed8" />
-
-              {/* outline */}
-              <circle
-                cx="16"
-                cy="18"
-                r="10"
-                fill="none"
-                stroke="#1e3a8a"
-                strokeWidth="1.5"
-              />
+      <div style={styles.maxWidth}>
+        <div style={styles.card}>
+          <div style={styles.header}>
+            <svg style={styles.icon} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
             </svg>
-
-              <h1 style={styles.title}>Stardew Valley Qi fruit Quest Calculator</h1>
-            </div>
-            
-            <div style={styles.grid}>
-              <div style={styles.inputGroup}>
-                <div>
-                  <label style={styles.label}>Days Left in Quest</label>
-                  <input
-                    type="number"
-                    min="1"
-                    max="28"
-                    value={daysLeft}
-                    onChange={(e) => setDaysLeft(Math.max(1, parseInt(e.target.value) || 1))}
-                    style={styles.input}
-                  />
-                </div>
-
-                <div style={styles.checkbox}>
-                  <input
-                    type="checkbox"
-                    id="speedgro"
-                    checked={useSpeedGro}
-                    onChange={(e) => setUseSpeedGro(e.target.checked)}
-                    style={styles.checkboxInput}
-                  />
-                  <label htmlFor="speedgro" style={{...styles.label, marginBottom: 0}}>
-                    Using Speed-Gro? (3 days growth instead of 4)
-                  </label>
-                </div>
-
-                <div>
-                  <label style={styles.label}>
-                    Limit Foraging Days (optional)
-                  </label>
-                  <input
-                    type="number"
-                    min="1"
-                    max={calculations.maxForagingDays}
-                    value={customForagingDays}
-                    onChange={(e) => setCustomForagingDays(e.target.value)}
-                    placeholder={`Leave empty for max (${calculations.maxForagingDays})`}
-                    style={styles.input}
-                  />
-                  <div style={styles.helpText}>
-                    Only forage seeds for this many days, then rely on seed maker
-                  </div>
-                </div>
+            <h1 style={styles.title}>Stardew Valley Crop Quest Calculator</h1>
+          </div>
+          
+          <div style={styles.grid}>
+            <div style={styles.inputGroup}>
+              <div>
+                <label style={styles.label}>Days Left in Quest</label>
+                <input
+                  type="number"
+                  min="1"
+                  max="28"
+                  value={daysLeft}
+                  onChange={(e) => setDaysLeft(Math.max(1, parseInt(e.target.value) || 1))}
+                  style={styles.input}
+                />
               </div>
 
-              <div style={styles.inputGroup}>
-                <div>
-                  <label style={styles.label}>Target Crops Needed</label>
-                  <input
-                    type="number"
-                    min="1"
-                    value={targetCrops}
-                    onChange={(e) => setTargetCrops(Math.max(1, parseInt(e.target.value) || 1))}
-                    style={styles.input}
-                  />
-                </div>
+              <div style={styles.checkbox}>
+                <input
+                  type="checkbox"
+                  id="speedgro"
+                  checked={useSpeedGro}
+                  onChange={(e) => setUseSpeedGro(e.target.checked)}
+                  style={styles.checkboxInput}
+                />
+                <label htmlFor="speedgro" style={{...styles.label, marginBottom: 0}}>
+                  Using Speed-Gro? (3 days growth instead of 4)
+                </label>
+              </div>
 
-                <div>
-                  <label style={styles.label}>Seed Maker Multiplier</label>
-                  <input
-                    type="number"
-                    min="1"
-                    step="0.1"
-                    value={seedMultiplier}
-                    onChange={(e) => setSeedMultiplier(Math.max(1, parseFloat(e.target.value) || 1))}
-                    style={styles.input}
-                  />
+              <div>
+                <label style={styles.label}>
+                  Limit Foraging Days (optional)
+                </label>
+                <input
+                  type="number"
+                  min="1"
+                  max={calculations.maxForagingDays}
+                  value={customForagingDays}
+                  onChange={(e) => setCustomForagingDays(e.target.value)}
+                  placeholder={`Leave empty for max (${calculations.maxForagingDays})`}
+                  style={styles.input}
+                />
+                <div style={styles.helpText}>
+                  Only forage seeds for this many days, then rely on seed maker
                 </div>
               </div>
             </div>
 
-            <div style={styles.resultsCard}>
-              <div style={styles.resultsHeader}>
-                <svg style={styles.icon} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
-                </svg>
-                <h2 style={styles.resultsTitle}>Results</h2>
+            <div style={styles.inputGroup}>
+              <div>
+                <label style={styles.label}>Target Crops Needed</label>
+                <input
+                  type="number"
+                  min="1"
+                  value={targetCrops}
+                  onChange={(e) => setTargetCrops(Math.max(1, parseInt(e.target.value) || 1))}
+                  style={styles.input}
+                />
               </div>
 
-              {calculations.dailySeedsNeeded === Infinity ? (
-                <div style={styles.error}>{calculations.breakdown}</div>
-              ) : (
-                <>
-                  <div style={styles.statsGrid}>
-                    <div style={styles.statCard}>
-                      <div style={styles.statLabel}>Growth Time</div>
-                      <div style={styles.statValue}>{calculations.growthTime} days</div>
-                    </div>
-                    
-                    <div style={styles.statCard}>
-                      <div style={styles.statLabel}>
-                        Foraging Days {customForagingDays !== '' && '(Limited)'}
-                      </div>
-                      <div style={styles.statValue}>{calculations.foragingDays} days</div>
-                      {customForagingDays !== '' && calculations.foragingDays < calculations.maxForagingDays && (
-                        <div style={styles.helpText}>Max available: {calculations.maxForagingDays}</div>
-                      )}
-                    </div>
-                    
-                    <div style={styles.statCard}>
-                      <div style={styles.statLabel}>Total Multiplier</div>
-                      <div style={styles.statValue}>{calculations.totalMultiplier.toFixed(2)}</div>
-                    </div>
-                  </div>
-
-                  <div style={styles.highlightCard}>
-                    <div style={styles.statLabel}>Seeds to Forage Per Day</div>
-                    <div style={styles.highlightValue}>
-                      ≈ {Math.ceil(calculations.dailySeedsNeeded)} seeds/day
-                    </div>
-                    <div style={{...styles.helpText, marginTop: '0.25rem'}}>
-                      (Exact: {calculations.dailySeedsNeeded.toFixed(2)})
-                    </div>
-                  </div>
-
-                  <div style={styles.statCard}>
-                    <div style={styles.statLabel}>Calculation Breakdown:</div>
-                    <div style={{fontFamily: 'monospace', fontSize: '0.875rem', color: '#4b5563', marginTop: '0.5rem'}}>
-                      {calculations.breakdown}
-                    </div>
-                    <div style={{...styles.helpText, marginTop: '0.5rem'}}>
-                      Formula: {targetCrops} ÷ {calculations.totalMultiplier.toFixed(2)} = {calculations.dailySeedsNeeded.toFixed(2)}
-                    </div>
-                  </div>
-                </>
-              )}
+              <div>
+                <label style={styles.label}>Seed Maker Multiplier</label>
+                <input
+                  type="number"
+                  min="1"
+                  step="0.1"
+                  value={seedMultiplier}
+                  onChange={(e) => setSeedMultiplier(Math.max(1, parseFloat(e.target.value) || 1))}
+                  style={styles.input}
+                />
+              </div>
             </div>
           </div>
 
-          {calculations.dailySeedsNeeded !== Infinity && plantingSchedule.length > 0 && (
-            <div style={styles.card}>
-              <h2 style={{...styles.resultsTitle, marginBottom: '1rem'}}>Planting Schedule</h2>
-              <div style={{fontSize: '0.875rem', color: '#6b7280', marginBottom: '1rem'}}>
-                {customForagingDays !== ''
-                  ? `Forage ${Math.ceil(calculations.dailySeedsNeeded)} seeds per day for the first ${calculations.foragingDays} days, then rely on seed maker:`
-                  : `If you forage ${Math.ceil(calculations.dailySeedsNeeded)} seeds per day, here's what happens:`
-                }
-              </div>
-              
-              <div style={{overflowX: 'auto'}}>
-                <table style={styles.table}>
-                  <thead style={styles.tableHeader}>
-                    <tr>
-                      <th style={styles.th}>Plant Day</th>
-                      <th style={styles.th}>Harvest Days</th>
-                      <th style={{...styles.th, textAlign: 'center'}}># Harvests</th>
-                      <th style={{...styles.th, textAlign: 'center'}}>Final Output Multiplier</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {plantingSchedule.map((row, i) => (
-                      <tr 
-                        key={i} 
-                        style={styles.tableRow}
-                        onMouseEnter={(e) => e.currentTarget.style.background = '#f0fdf4'}
-                        onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
-                      >
-                        <td style={{...styles.td, fontWeight: '600'}}>Day {row.plantDay}</td>
-                        <td style={{...styles.td, color: '#6b7280'}}>
-                          {row.harvestDays.join(', ')}
-                        </td>
-                        <td style={{...styles.td, textAlign: 'center'}}>{row.harvests}</td>
-                        <td style={{...styles.td, textAlign: 'center', fontWeight: '600', color: '#15803d'}}>
-                          ×{row.finalOutput}
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
+          <div style={styles.resultsCard}>
+            <div style={styles.resultsHeader}>
+              <svg style={styles.icon} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+              </svg>
+              <h2 style={styles.resultsTitle}>Results</h2>
+            </div>
 
-              <div style={styles.infoBox}>
-                <div style={{fontSize: '0.875rem', color: '#1e40af'}}>
-                  <strong>Total expected crops:</strong> {Math.ceil(calculations.dailySeedsNeeded)} seeds/day × {calculations.totalMultiplier.toFixed(2)} multiplier = 
-                  <span style={{fontWeight: 'bold', color: '#15803d', marginLeft: '0.25rem'}}>
-                    ≈{Math.ceil(calculations.dailySeedsNeeded * calculations.totalMultiplier)} crops
-                  </span>
+            {calculations.dailySeedsNeeded === Infinity ? (
+              <div style={styles.error}>{calculations.breakdown}</div>
+            ) : (
+              <>
+                <div style={styles.statsGrid}>
+                  <div style={styles.statCard}>
+                    <div style={styles.statLabel}>Growth Time</div>
+                    <div style={styles.statValue}>{calculations.growthTime} days</div>
+                  </div>
+                  
+                  <div style={styles.statCard}>
+                    <div style={styles.statLabel}>
+                      Foraging Days {customForagingDays !== '' && '(Limited)'}
+                    </div>
+                    <div style={styles.statValue}>{calculations.foragingDays} days</div>
+                    {customForagingDays !== '' && calculations.foragingDays < calculations.maxForagingDays && (
+                      <div style={styles.helpText}>Max available: {calculations.maxForagingDays}</div>
+                    )}
+                  </div>
+                  
+                  <div style={styles.statCard}>
+                    <div style={styles.statLabel}>Total Multiplier</div>
+                    <div style={styles.statValue}>{calculations.totalMultiplier.toFixed(2)}</div>
+                  </div>
                 </div>
+
+                <div style={styles.highlightCard}>
+                  <div style={styles.statLabel}>Seeds to Forage Per Day</div>
+                  <div style={styles.highlightValue}>
+                    ≈ {Math.ceil(calculations.dailySeedsNeeded)} seeds/day
+                  </div>
+                  <div style={{...styles.helpText, marginTop: '0.25rem'}}>
+                    (Exact: {calculations.dailySeedsNeeded.toFixed(2)})
+                  </div>
+                </div>
+
+                <div style={styles.statCard}>
+                  <div style={styles.statLabel}>Calculation Breakdown:</div>
+                  <div style={{fontFamily: 'monospace', fontSize: '0.875rem', color: '#4b5563', marginTop: '0.5rem'}}>
+                    {calculations.breakdown}
+                  </div>
+                  <div style={{...styles.helpText, marginTop: '0.5rem'}}>
+                    Formula: {targetCrops} ÷ {calculations.totalMultiplier.toFixed(2)} = {calculations.dailySeedsNeeded.toFixed(2)}
+                  </div>
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+
+        {calculations.dailySeedsNeeded !== Infinity && plantingSchedule.length > 0 && (
+          <div style={styles.card}>
+            <h2 style={{...styles.resultsTitle, marginBottom: '1rem'}}>Planting Schedule</h2>
+            <div style={{fontSize: '0.875rem', color: '#6b7280', marginBottom: '1rem'}}>
+              {customForagingDays !== ''
+                ? `Forage ${Math.ceil(calculations.dailySeedsNeeded)} seeds per day for the first ${calculations.foragingDays} days, then rely on seed maker:`
+                : `If you forage ${Math.ceil(calculations.dailySeedsNeeded)} seeds per day, here's what happens:`
+              }
+            </div>
+            
+            <div style={{overflowX: 'auto'}}>
+              <table style={styles.table}>
+                <thead style={styles.tableHeader}>
+                  <tr>
+                    <th style={styles.th}>Plant Day</th>
+                    <th style={styles.th}>Harvest Days</th>
+                    <th style={{...styles.th, textAlign: 'center'}}># Harvests</th>
+                    <th style={{...styles.th, textAlign: 'center'}}>Final Output Multiplier</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {plantingSchedule.map((row, i) => (
+                    <tr 
+                      key={i} 
+                      style={styles.tableRow}
+                      onMouseEnter={(e) => e.currentTarget.style.background = '#f0fdf4'}
+                      onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
+                    >
+                      <td style={{...styles.td, fontWeight: '600'}}>Day {row.plantDay}</td>
+                      <td style={{...styles.td, color: '#6b7280'}}>
+                        {row.harvestDays.join(', ')}
+                      </td>
+                      <td style={{...styles.td, textAlign: 'center'}}>{row.harvests}</td>
+                      <td style={{...styles.td, textAlign: 'center', fontWeight: '600', color: '#15803d'}}>
+                        ×{row.finalOutput}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            <div style={styles.infoBox}>
+              <div style={{fontSize: '0.875rem', color: '#1e40af'}}>
+                <strong>Total expected crops:</strong> {Math.ceil(calculations.dailySeedsNeeded)} seeds/day × {calculations.totalMultiplier.toFixed(2)} multiplier = 
+                <span style={{fontWeight: 'bold', color: '#15803d', marginLeft: '0.25rem'}}>
+                  ≈{Math.ceil(calculations.dailySeedsNeeded * calculations.totalMultiplier)} crops
+                </span>
               </div>
             </div>
-          )}
-        </div>
+          </div>
+        )}
       </div>
     </div>
   );
